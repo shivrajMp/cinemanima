@@ -49,7 +49,7 @@ const CardContainer = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 16px;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-
+  background-color: white;
   &:hover {
     animation: ${bounceAnimation} 2s infinite;
     cursor: pointer;

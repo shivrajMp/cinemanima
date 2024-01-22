@@ -29,3 +29,7 @@ export const fetchApiData = (page=1) => {
       .catch(error => dispatch(fetchApiDataFailure(error.message)));
   };
 };
+
+// https://api.jikan.moe/v4/anime?q=yourname&page=1&limit=8&sfw
+// searc
+// fetch https://api.jikan.moe/v4/anime/35198 mal id

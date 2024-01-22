@@ -3,66 +3,66 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { fetchApiData } from "../../action/animeAction";
 import styled from "styled-components";
-import { Grid, Pagination, Paper } from "@mui/material";
+import { Button, Grid, Input, Pagination, Paper, Typography } from "@mui/material";
 import Footer from "../footer/footer";
 import Header from "../header/header";
 
 const StyledMoviesGrid = styled(Grid)`
+  position: relative;
+`;
+const StyledMoviesGridParent = styled.div`
   padding: 2%;
   position: relative;
-  top:-25vh;
-  height: 100%;
-  /*display: flex;
-column-gap: 5px; */
-  /* position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(255, 255, 255, 0.8)// Adjust the overlay color and transparency
-    color:#000; // Adjust the text color */
+  top: 20vh;
+  z-index: 2;
 `;
-// const StyledAnimeCard = styled(AnimeCard)`
-//   /* :hover {
-//     transform: scale(1.4);
-//   } */
-// `;
+
+const StyledPaginationContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 10px;
+  flex-wrap: wrap;
+`;
 const StyledPagination = styled(Pagination)`
   display: flex;
   justify-content: center;
-  /* position: sticky;
-  bottom: 0; */
-`;
-const StyledPaper = styled(Paper)`
-  padding: 20px;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-`;
-
-const Styledimage = styled.div`
-  height: 55vh;
   position: relative;
-  background: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0),
-      rgba(255, 255, 255, 0.40),
-      rgba(255, 255, 255, 1)
-    ),
-    url(${process.env.PUBLIC_URL}/201503.jpg) center/cover no-repeat;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  overflow: hidden;
+  margin: 2rem 0;
 `;
+const GoToPageInput = styled(Input)`
+  width: 50px;
+  margin-right: 10px;
+`;
+const BackgroundImage = styled.div`
+  img {
+    position: fixed;
 
+    left: 0;
+    z-index: -1;
+    top: -70px;
+    width: 100%;
+    height: 60vh;
+    
+  }
+`;
+const BackgroundImage1 = styled.div`
+  img {
+    position: fixed;
+
+    left: 0;
+    z-index: 3;
+
+    top: -70px;
+    width: 100%;
+    height: 60vh;
+    
+  }
+`;
+const ErrorMessage = styled(Typography)`
+  color: red;
+  margin-top: 5px;
+`;
 function Dashboard() {
   const dispatch = useDispatch();
   const animeList = useSelector((state) => state?.data?.anime);
@@ -71,56 +71,93 @@ function Dashboard() {
   const [anime, setAnime] = useState([]);
   const [pagination, setPagination] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [inputError, setInputError] = useState(null);
   const handleChange = (event, value) => {
     // Handle page change
     console.log(`Clicked page: ${value}`);
     setCurrentPage(value);
+    setGoToPage(value)
     dispatch(fetchApiData(value));
+  };
+  const [goToPage, setGoToPage] = useState(1);
+
+  const handleInputChange = (event) => {
+    setGoToPage(event.target.value);
+    setInputError(null);
+  };
+
+  const handleGoToClick = () => {
+    if (goToPage && goToPage > 0  && !isNaN(goToPage) && goToPage <= pagination?.last_visible_page ) {
+      const parsedPage = parseInt(goToPage, 10);
+      handleChange(null, parsedPage);
+    }else{
+      setInputError("Invalid page number");
+    }
   };
   useEffect(() => {
     dispatch(fetchApiData());
   }, [dispatch]);
+
 
   useEffect(() => {
     console.log(animeList, "list");
     setAnime(animeList?.data || []);
     setPagination(animeList?.pagination || {});
   }, [animeList]);
-  return (
-  
-      !error ? (
-        <>
-          {/* <StyledPaper elevation={3} ></StyledPaper> */}
-          <Styledimage></Styledimage>
-         
-          {/* <Header /> */}
-          {/* <div key={"navbar"}></div> */}
-          <StyledMoviesGrid container spacing={10} justifyContent="center">
-            {anime.map((movie) => (
-              <Grid item key={movie?.mal_id}>
-                <AnimeCard
-                  anime={movie}
-                  key={movie?.mal_id}
-                  isLoading={isLoading}
-                />
-              </Grid>
-            ))}
-          </StyledMoviesGrid>
+  return !error ? (
+    <>
+      <Header />
+      <BackgroundImage>
+        <img src={`${process.env.PUBLIC_URL}/A1.png`} alt="Background" />
+      </BackgroundImage>
+
+      <BackgroundImage1>
+        <img src={`${process.env.PUBLIC_URL}/a2.png`} alt="Background" />
+      </BackgroundImage1>
+      {/* <div key={"navbar"}></div> */}
+      <StyledMoviesGridParent>
+        <StyledMoviesGrid container spacing={10} justifyContent="center">
+          {anime.map((movie) => (
+            <Grid item key={movie?.mal_id}>
+              <AnimeCard
+                anime={movie}
+                key={movie?.mal_id}
+                isLoading={isLoading}
+              />
+            </Grid>
+          ))}
+        </StyledMoviesGrid>
+        <StyledPaginationContainer>
           <StyledPagination
-          size="small"
-          color="primary"
+            size="small"
+            color="primary"
             count={pagination?.last_visible_page || 0}
             page={currentPage || 1}
             showFirstButton
             showLastButton={!!pagination?.has_next_page}
             onChange={handleChange}
           />
-          <Footer />
-        </>
-      ) : (
-        <></>
-      )
+          <div>
+          <GoToPageInput
+            // type="number"
+            placeholder="#0"
+            value={goToPage}
+            onChange={handleInputChange}
+            error={Boolean(inputError)}
+          />
+          <Button variant="contained" onClick={handleGoToClick}>
+            Go
+          </Button>
+          
+          </div>
+          {inputError && <ErrorMessage>{inputError}</ErrorMessage>}
+        </StyledPaginationContainer>
+      </StyledMoviesGridParent>
+      <Footer />
+      
+    </>
+  ) : (
+    <></>
   );
 }
 
