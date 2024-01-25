@@ -17,15 +17,14 @@ function App() {
   return (
     <Router>
     <Routes>
-    <Route path="/" element={<Dashboard />} />
-        <Route path="/details" element={<AnimeDetails />} />
-
+    <Route path="/anime" element={<Dashboard />} />
+        <Route path="/anime/:animeName/:animeId" element={<AnimeDetails />} />
         {/* Redirect any unmatched paths to the home page */}
         <Route
           path="*"
           element={
             <Navigate
-              to="/"
+              to="/anime"
               replace // Use replace to avoid adding a new entry to the history stack
             />
           }

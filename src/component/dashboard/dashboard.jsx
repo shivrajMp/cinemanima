@@ -3,9 +3,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { fetchApiData } from "../../action/animeAction";
 import styled from "styled-components";
-import { Button, Grid, Input, Pagination, Paper, Typography } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Input,
+  Pagination,
+  PaginationItem,
+  Paper,
+  Typography,
+} from "@mui/material";
 import Footer from "../footer/footer";
 import Header from "../header/header";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const StyledMoviesGrid = styled(Grid)`
   position: relative;
@@ -29,6 +38,13 @@ const StyledPagination = styled(Pagination)`
   justify-content: center;
   position: relative;
   margin: 2rem 0;
+  /* .dark-mode-pagination .MuiPaginationItem-ellipsis,
+  .light-mode-pagination .MuiPaginationItem-ellipsis {
+    color: gray !important; 
+  } */
+  .MuiPaginationItem-ellipsis{
+    color: white !important;
+  }
 `;
 const GoToPageInput = styled(Input)`
   width: 50px;
@@ -43,7 +59,6 @@ const BackgroundImage = styled.div`
     top: -70px;
     width: 100%;
     height: 60vh;
-    
   }
 `;
 const BackgroundImage1 = styled.div`
@@ -56,7 +71,6 @@ const BackgroundImage1 = styled.div`
     top: -70px;
     width: 100%;
     height: 60vh;
-    
   }
 `;
 const ErrorMessage = styled(Typography)`
@@ -72,12 +86,16 @@ function Dashboard() {
   const [pagination, setPagination] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [inputError, setInputError] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
   const handleChange = (event, value) => {
     // Handle page change
+    localStorage.setItem("currentPage", value);
     console.log(`Clicked page: ${value}`);
     setCurrentPage(value);
-    setGoToPage(value)
+    setGoToPage(value);
     dispatch(fetchApiData(value));
+    navigate(`/anime?page=${value}`, { replace: true });
   };
   const [goToPage, setGoToPage] = useState(1);
 
@@ -87,17 +105,25 @@ function Dashboard() {
   };
 
   const handleGoToClick = () => {
-    if (goToPage && goToPage > 0  && !isNaN(goToPage) && goToPage <= pagination?.last_visible_page ) {
+    if (
+      goToPage &&
+      goToPage > 0 &&
+      !isNaN(goToPage) &&
+      goToPage <= pagination?.last_visible_page
+    ) {
       const parsedPage = parseInt(goToPage, 10);
       handleChange(null, parsedPage);
-    }else{
+    } else {
       setInputError("Invalid page number");
     }
   };
   useEffect(() => {
-    dispatch(fetchApiData());
+    const currentPage = parseInt(localStorage.getItem("currentPage")) || 1;
+    setCurrentPage(currentPage);
+    setGoToPage(currentPage);
+    dispatch(fetchApiData(currentPage));
+    navigate(`/anime?page=${currentPage}`, { replace: true });
   }, [dispatch]);
-
 
   useEffect(() => {
     console.log(animeList, "list");
@@ -136,25 +162,33 @@ function Dashboard() {
             showFirstButton
             showLastButton={!!pagination?.has_next_page}
             onChange={handleChange}
+            darkMode={true}
+            style={{ color: "white" }}
+            renderItem={(item) => (
+              <PaginationItem
+                {...item}
+                style={{ color: "white" }}
+                // Add other props as needed
+              />
+            )}
           />
           <div>
-          <GoToPageInput
-            // type="number"
-            placeholder="#0"
-            value={goToPage}
-            onChange={handleInputChange}
-            error={Boolean(inputError)}
-          />
-          <Button variant="contained" onClick={handleGoToClick}>
-            Go
-          </Button>
-          
+            <GoToPageInput
+              // type="number"
+              placeholder="#0"
+              value={goToPage}
+              onChange={handleInputChange}
+              error={Boolean(inputError)}
+              style={{ color: "white" }}
+            />
+            <Button variant="contained" onClick={handleGoToClick}>
+              Go
+            </Button>
           </div>
           {inputError && <ErrorMessage>{inputError}</ErrorMessage>}
         </StyledPaginationContainer>
       </StyledMoviesGridParent>
       <Footer />
-      
     </>
   ) : (
     <></>

@@ -1,11 +1,10 @@
 import {
   AppBar,
   Toolbar,
-  Typography,
  
 } from "@mui/material";
 import React from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 const StyledHeader = styled.div`
   /* background-color: aliceblue; */
   height: 50px;

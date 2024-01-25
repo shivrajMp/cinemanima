@@ -1,37 +1,12 @@
-import {
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia,
-  IconButton,
-  Typography,
-} from "@mui/material";
-import { useEffect } from "react";
-import LazyLoad from "react-lazyload";
+import { IconButton } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 // import styled from "styled-components";
 import styled, { keyframes } from "styled-components";
 import ContentLoader, { List } from "react-content-loader";
 import { YouTube } from "@mui/icons-material";
 import InfoIcon from "@mui/icons-material/Info";
-// import { makeStyles } from '@mui/styles';
-// const useStyles = makeStyles({
-//   card: {
-//     maxWidth: 345, // Set the maximum width of the card
-//   },
-//   media: {
-//     height: 0,
-//     paddingTop: '56.25%', // 16:9 aspect ratio (divide 9 by 16, then multiply by 100 to get percentage)
-//   },
-// });
-// const StyledCard = styled(Card)`
-//   max-width: 200px;
-//   min-height: 350px;
-//   height: 350px !important;
-//   box-shadow: 12px 12px 12px black;
-//   text-shadow: 2px;
+import { Link } from "react-router-dom";
 
-// `;
 
 const bounceAnimation = keyframes`
   0%, 100% {
@@ -46,14 +21,15 @@ const CardContainer = styled.div`
   height: 21.875rem;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
   margin: 16px;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  background-color: white;
+  /* background-color:  background-color: rgba(255, 255, 255, 0.7);; */
+  background: white;
   &:hover {
     animation: ${bounceAnimation} 2s infinite;
     cursor: pointer;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
   }
 `;
 const zoomInAnimation = keyframes`
@@ -67,7 +43,7 @@ const zoomInAnimation = keyframes`
     opacity: 1;
   }`;
 const CardImage = styled.img`
-flex-grow: 1;
+  flex-grow: 1;
   width: 100%;
   height: 15.625rem; /* Set the desired height of the image */
   object-fit: cover; /* Ensure the image covers the entire container */
@@ -104,6 +80,7 @@ const CardTitle = styled.h5`
   margin: 0;
   margin-bottom: 8px;
   padding: 10px 10px 0px 10px;
+  background-color: transparent;
 `;
 
 const CardText = styled.p(({ iconcolor, fontWeight }) => ({
@@ -218,7 +195,13 @@ function AnimeCard({ anime, isLoading }) {
         </>
       ) : (
         <>
-          {images?.webp?.large_image_url? <CardImage src={images?.webp?.large_image_url} loading="lazy"  alt="Image" />:null}
+          {images?.webp?.large_image_url ? (
+            <CardImage
+              src={images?.webp?.large_image_url}
+              loading="lazy"
+              alt="Image"
+            />
+          ) : null}
           <CardContentDiv>
             <CardTitle>{anime?.title_english || anime?.title}</CardTitle>
             {/* <CardText>{anime.title_english}</CardText> */}
@@ -276,7 +259,7 @@ function AnimeCard({ anime, isLoading }) {
                 </CardText>
                 {anime?.score ? (
                   <>
-                    {anime.score +"/10"}
+                    {anime.score + "/10"}
                     <StarIcon style={{ color: "#FFD700" }} />
                   </>
                 ) : (
@@ -284,9 +267,15 @@ function AnimeCard({ anime, isLoading }) {
                 )}
               </CardInfo>
               <StyledInfo>
-                <p id="moreinfo">More info</p>
+                <Link
+                  to={`/anime/${anime?.title_english || anime?.title}/${
+                    anime?.mal_id
+                  }`}
+                >
+                  <p id="moreinfo">More info</p>
 
-                <InfoIcon />
+                  <InfoIcon />
+                </Link>
               </StyledInfo>
             </AdditionalDetails>
           </CardContentDiv>
