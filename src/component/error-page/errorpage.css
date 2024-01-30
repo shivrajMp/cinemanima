@@ -1,0 +1,110 @@
+.image_ {
+    height: 100vh;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .image_ {
+      height: 50%; /* Height for mobile */
+    }
+  }
+  
+  @media screen and (min-width: 769px) {
+    .image_ {
+      height: 100vh; /* Height for laptop */
+    }
+  }
+
+
+  /* styles.css */
+.container {
+  display: flex;
+  height: 100vh;
+  padding: 10px;
+}
+
+.left {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.right {
+
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+}
+
+.left{
+  color: white;
+}
+
+#header_{
+  font-size: 50px;
+}
+#header_1{
+  font-size: 20px;
+}
+/* .right img {
+  max-width: 100%;
+  height: auto;
+} */
+
+@media screen and (max-width: 768px) {
+  .container {
+    flex-direction: column; /* Stack items vertically on mobile */
+  }
+
+  .left,
+  .right {
+    flex: none; /* Reset flex value for mobile */
+    width: 100%; /* Set width to 100% for mobile */
+    text-align: center; /* Center text and image on mobile */
+  }
+}
+
+
+
+@keyframes explode {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.container1 {
+  display: flex;
+}
+
+.firecracker {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 10px; /* Add spacing between firecrackers */
+  animation: explode 1s ease-out infinite;
+}
+
+.red {
+  background-color: red;
+  animation-delay: 0s; /* Delay the first firecracker */
+}
+
+.blue {
+  background-color: blue;
+  animation-delay: 0.25s; /* Delay the second firecracker */
+}
+
+.green {
+  background-color: green;
+  animation-delay: 0.5s; /* Delay the third firecracker */
+}
+
+.yellow {
+  background-color: yellow;
+  animation-delay: 0.75s; /* Delay the fourth firecracker */
+}

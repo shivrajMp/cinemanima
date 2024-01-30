@@ -12,6 +12,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
+
 import Footer from "../footer/footer";
 import Header from "../header/header";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -53,7 +54,7 @@ const GoToPageInput = styled(Input)`
 const BackgroundImage = styled.div`
   img {
     position: fixed;
-
+    pointer-events: none;
     left: 0;
     z-index: -1;
     top: -70px;
@@ -64,7 +65,7 @@ const BackgroundImage = styled.div`
 const BackgroundImage1 = styled.div`
   img {
     position: fixed;
-
+    pointer-events: none;
     left: 0;
     z-index: 3;
 
@@ -103,7 +104,10 @@ function Dashboard() {
     setGoToPage(event.target.value);
     setInputError(null);
   };
-
+  useEffect(()=>{
+    navigate(`/anime/error-page`);
+    
+  },[error])
   const handleGoToClick = () => {
     if (
       goToPage &&

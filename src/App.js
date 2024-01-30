@@ -9,6 +9,7 @@ import Dashboard from './component/dashboard/dashboard';
 import AnimeCard from './component/dashboard/card/animeCard';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import AnimeDetails from './component/animedetails/animedetails';
+import ErrorPage from './component/error-page/errorpage';
 
 function App() {
 
@@ -28,6 +29,10 @@ function App() {
               replace // Use replace to avoid adding a new entry to the history stack
             />
           }
+        />
+        <Route
+          path="/anime/error-page"
+          element={<ErrorPage />}
         />
 
     </Routes>
