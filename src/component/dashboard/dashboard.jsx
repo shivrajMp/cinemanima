@@ -12,7 +12,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-
+import "./dashboard.css";
 import Footer from "../footer/footer";
 import Header from "../header/header";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -23,8 +23,9 @@ const StyledMoviesGrid = styled(Grid)`
 const StyledMoviesGridParent = styled.div`
   padding: 2%;
   position: relative;
-  top: 20vh;
+  /* top: 20vh; */
   z-index: 2;
+  margin-top: 100px;
 `;
 
 const StyledPaginationContainer = styled.div`
@@ -33,6 +34,8 @@ const StyledPaginationContainer = styled.div`
   justify-content: center;
   column-gap: 10px;
   flex-wrap: wrap;
+  z-index: 2;
+  margin: 10px 0;
 `;
 const StyledPagination = styled(Pagination)`
   display: flex;
@@ -43,7 +46,7 @@ const StyledPagination = styled(Pagination)`
   .light-mode-pagination .MuiPaginationItem-ellipsis {
     color: gray !important; 
   } */
-  .MuiPaginationItem-ellipsis{
+  .MuiPaginationItem-ellipsis {
     color: white !important;
   }
 `;
@@ -57,9 +60,14 @@ const BackgroundImage = styled.div`
     pointer-events: none;
     left: 0;
     z-index: -1;
-    top: -70px;
+    top: 0;
     width: 100%;
-    height: 60vh;
+    height: 50vh;
+  }
+  @media (max-width: 600px) {
+    img {
+      object-fit: cover; /* Adjust the height for smaller screens */
+    }
   }
 `;
 const BackgroundImage1 = styled.div`
@@ -69,9 +77,14 @@ const BackgroundImage1 = styled.div`
     left: 0;
     z-index: 3;
 
-    top: -70px;
+    top: 0;
     width: 100%;
-    height: 60vh;
+    height: 50vh;
+  }
+  @media (max-width: 600px) {
+    img {
+      object-fit: cover; /* Adjust the height for smaller screens */
+    }
   }
 `;
 const ErrorMessage = styled(Typography)`
@@ -79,6 +92,30 @@ const ErrorMessage = styled(Typography)`
   margin-top: 5px;
 `;
 function Dashboard() {
+  const [isAtBottom, setIsAtBottom] = useState(false);
+
+  const handleClick = () => {
+    if (isAtBottom) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+    setIsAtBottom(!isAtBottom);
+  };
+  useEffect(() => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+  
+    const isBottom =  scrollTop + clientHeight >= scrollHeight
+    console.log(isBottom)
+    if (isBottom)
+    setIsAtBottom(isBottom)
+  //  else if(scrollTop <= 0)
+  //  setIsAtBottom(scrollTop <= 0)
+
+  }, []);
+
   const dispatch = useDispatch();
   const animeList = useSelector((state) => state?.data?.anime);
   const isLoading = useSelector((state) => state?.data?.loading);
@@ -104,10 +141,9 @@ function Dashboard() {
     setGoToPage(event.target.value);
     setInputError(null);
   };
-  useEffect(()=>{
+  useEffect(() => {
     navigate(`/anime/error-page`);
-    
-  },[error])
+  }, [error]);
   const handleGoToClick = () => {
     if (
       goToPage &&
@@ -136,27 +172,31 @@ function Dashboard() {
   }, [animeList]);
   return !error ? (
     <>
-      <Header />
-      <BackgroundImage>
-        <img src={`${process.env.PUBLIC_URL}/A1.png`} alt="Background" />
-      </BackgroundImage>
+      <div>
+        <Header />
+        <div style={{ height: "60%" }}>
+          <BackgroundImage>
+            <img src={`${process.env.PUBLIC_URL}/A1.png`} alt="Background" />
+          </BackgroundImage>
 
-      <BackgroundImage1>
-        <img src={`${process.env.PUBLIC_URL}/a2.png`} alt="Background" />
-      </BackgroundImage1>
-      {/* <div key={"navbar"}></div> */}
-      <StyledMoviesGridParent>
-        <StyledMoviesGrid container spacing={10} justifyContent="center">
-          {anime.map((movie) => (
-            <Grid item key={movie?.mal_id}>
-              <AnimeCard
-                anime={movie}
-                key={movie?.mal_id}
-                isLoading={isLoading}
-              />
-            </Grid>
-          ))}
-        </StyledMoviesGrid>
+          <BackgroundImage1>
+            <img src={`${process.env.PUBLIC_URL}/a2.png`} alt="Background" />
+          </BackgroundImage1>
+        </div>
+        {/* <div key={"navbar"}></div> */}
+        <StyledMoviesGridParent>
+          <StyledMoviesGrid container spacing={10} justifyContent="center">
+            {anime.map((movie) => (
+              <Grid item key={movie?.mal_id}>
+                <AnimeCard
+                  anime={movie}
+                  key={movie?.mal_id}
+                  isLoading={isLoading}
+                />
+              </Grid>
+            ))}
+          </StyledMoviesGrid>
+        </StyledMoviesGridParent>
         <StyledPaginationContainer>
           <StyledPagination
             size="small"
@@ -176,6 +216,9 @@ function Dashboard() {
               />
             )}
           />
+          <button className="floating-icon" onClick={handleClick}>
+            {isAtBottom ? "▲" : "▼"} {/* Change icon based on state */}
+          </button>
           <div>
             <GoToPageInput
               // type="number"
@@ -183,7 +226,12 @@ function Dashboard() {
               value={goToPage}
               onChange={handleInputChange}
               error={Boolean(inputError)}
-              style={{ color: "white" }}
+              style={{
+                color: "white",
+                background: "black",
+                borderRadius: "5px",
+                padding: "0 10px",
+              }}
             />
             <Button variant="contained" onClick={handleGoToClick}>
               Go
@@ -191,8 +239,7 @@ function Dashboard() {
           </div>
           {inputError && <ErrorMessage>{inputError}</ErrorMessage>}
         </StyledPaginationContainer>
-      </StyledMoviesGridParent>
-      <Footer />
+      </div>
     </>
   ) : (
     <></>

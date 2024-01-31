@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import store from "./store/movies.store";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
+import Footer from "./component/footer/footer";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -14,6 +15,7 @@ root.render(
   <ThemeProvider theme={theme}>
     <Provider store={store}>
       <App />
+      <Footer />
     </Provider>
   </ThemeProvider>
   </React.StrictMode>,
