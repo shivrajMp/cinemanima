@@ -7,7 +7,7 @@ import { Button, Typography } from '@mui/material';
 import Card from './component/dashboard/card/animeCard';
 import Dashboard from './component/dashboard/dashboard';
 import AnimeCard from './component/dashboard/card/animeCard';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { HashRouter  as Router, Route, Routes, Navigate } from 'react-router-dom';
 import AnimeDetails from './component/animedetails/animedetails';
 import ErrorPage from './component/error-page/errorpage';
 
