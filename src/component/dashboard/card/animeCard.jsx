@@ -119,7 +119,12 @@ const StyledInfo = styled.div`
     color: gray;
     font-size: 1rem;
     position: relative;
-    top: 2px;
+    top:7px;
+  }
+  a{
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 const CardInfo = styled.span`
@@ -209,9 +214,9 @@ function AnimeCard({ anime, isLoading }) {
               {/* Add more details to show on hover */}
               <CardInfo>
                 <CardText iconcolor="#000000" fontWeight={500}>
-                  Type:{" "}
+                {anime?.type}
                 </CardText>
-                <CardText>{anime?.type}</CardText>
+                <CardText>{anime?.year ? `(${anime?.year})`: null}</CardText>
               </CardInfo>
               <CardInfo>
                 <CardText iconcolor="#000000" fontWeight={500}>

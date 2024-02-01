@@ -1,7 +1,7 @@
 import AnimeCard from "./card/animeCard";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchApiData } from "../../action/animeAction";
+import { clearDetailsActionCreator, fetchApiData } from "../../action/animeAction";
 import styled from "styled-components";
 import {
   Button,
@@ -62,7 +62,7 @@ const BackgroundImage = styled.div`
     z-index: -1;
     top: 0;
     width: 100%;
-    height: 50vh;
+    height: 400px;
   }
   @media (max-width: 600px) {
     img {
@@ -79,7 +79,7 @@ const BackgroundImage1 = styled.div`
 
     top: 0;
     width: 100%;
-    height: 50vh;
+    height: 400px;
   }
   @media (max-width: 600px) {
     img {
@@ -92,29 +92,8 @@ const ErrorMessage = styled(Typography)`
   margin-top: 5px;
 `;
 function Dashboard() {
-  const [isAtBottom, setIsAtBottom] = useState(false);
 
-  const handleClick = () => {
-    if (isAtBottom) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    }
-    setIsAtBottom(!isAtBottom);
-  };
-  useEffect(() => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight;
-  
-    const isBottom =  scrollTop + clientHeight >= scrollHeight
-    console.log(isBottom)
-    if (isBottom)
-    setIsAtBottom(isBottom)
-  //  else if(scrollTop <= 0)
-  //  setIsAtBottom(scrollTop <= 0)
 
-  }, []);
 
   const dispatch = useDispatch();
   const animeList = useSelector((state) => state?.data?.anime);
@@ -129,9 +108,9 @@ function Dashboard() {
   const handleChange = (event, value) => {
     // Handle page change
     localStorage.setItem("currentPage", value);
-    console.log(`Clicked page: ${value}`);
     setCurrentPage(value);
     setGoToPage(value);
+    dispatch(clearDetailsActionCreator());
     dispatch(fetchApiData(value));
     navigate(`/anime?page=${value}`, { replace: true });
   };
@@ -161,26 +140,26 @@ function Dashboard() {
     const currentPage = parseInt(localStorage.getItem("currentPage")) || 1;
     setCurrentPage(currentPage);
     setGoToPage(currentPage);
+    dispatch(clearDetailsActionCreator());
     dispatch(fetchApiData(currentPage));
     navigate(`/anime?page=${currentPage}`, { replace: true });
   }, [dispatch]);
 
   useEffect(() => {
-    console.log(animeList, "list");
     setAnime(animeList?.data || []);
     setPagination(animeList?.pagination || {});
   }, [animeList]);
   return !error ? (
-    <>
+   
       <div>
-        <Header />
+ 
         <div style={{ height: "60%" }}>
           <BackgroundImage>
-            <img src={`${process.env.PUBLIC_URL}/A1.png`} alt="Background" />
+            <img src={`${process.env.PUBLIC_URL}/A1.png`} alt="Background" loading="lazy" />
           </BackgroundImage>
 
           <BackgroundImage1>
-            <img src={`${process.env.PUBLIC_URL}/a2.png`} alt="Background" />
+            <img src={`${process.env.PUBLIC_URL}/a2.png`} alt="Background" loading="lazy"/>
           </BackgroundImage1>
         </div>
         {/* <div key={"navbar"}></div> */}
@@ -216,9 +195,7 @@ function Dashboard() {
               />
             )}
           />
-          <button className="floating-icon" onClick={handleClick}>
-            {isAtBottom ? "▲" : "▼"} {/* Change icon based on state */}
-          </button>
+         
           <div>
             <GoToPageInput
               // type="number"
@@ -236,11 +213,12 @@ function Dashboard() {
             <Button variant="contained" onClick={handleGoToClick}>
               Go
             </Button>
-          </div>
+            
+          </div>  
           {inputError && <ErrorMessage>{inputError}</ErrorMessage>}
         </StyledPaginationContainer>
       </div>
-    </>
+  
   ) : (
     <></>
   );

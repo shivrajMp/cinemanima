@@ -9,6 +9,9 @@
   color: white;
 
   text-align: center;
+  /* position:fixed; */
+  bottom:0;
+  width:100%;
 }
 .footer > .parent_footer{
   display: flex;

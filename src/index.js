@@ -8,17 +8,23 @@ import store from "./store/movies.store";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import Footer from "./component/footer/footer";
+import Header from "./component/header/header";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
-  <ThemeProvider theme={theme}>
-    <Provider store={store}>
-      <App />
-      <Footer />
-    </Provider>
-  </ThemeProvider>
-  </React.StrictMode>,
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <div className="main-container">
+         <Header />
+          <div className="content">
+            <App />
+          </div>
+          <Footer />
+        </div>
+      </Provider>
+    </ThemeProvider>
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

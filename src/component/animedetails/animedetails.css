@@ -1,0 +1,11 @@
+.image-container {
+  width: 300px; /* Set your fixed width */
+  height: 25rem; /* Set your fixed height */
+  overflow: hidden; /* Hide any overflow */
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
