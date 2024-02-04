@@ -208,7 +208,8 @@ const IOSSwitch = styled((props) => (
 function Header() {
   const totalAnime = useSelector((state) => state?.totalAnime?.data);
   const isLoading = useSelector((state) => state?.totalAnime?.loading);
-  const { currentTopAnime, updateValue } = React.useContext(MyContext);
+  const { currentTopAnime, updateValue, onDetails, updateOnDetails } =
+    React.useContext(MyContext);
   const dispatch = useDispatch();
   const move = function () {
     window.location.href = "/cinemanima";
@@ -266,24 +267,29 @@ function Header() {
     clickCardSound.play();
     setFilterValue(values);
     updateValue(false);
+    setSearchValue("");
     dispatch(fetchApiData(1, "", values, false));
     setDrawerOpen(false);
   };
 
   const ClearForm = () => {
     clickCardSound.play();
+    clickDropdown.play();
+    setDrawerOpen(false);
     setFilterValue({});
   };
 
   const handleChange = (event) => {
-    // updateValue(event.target.checked);
     updateValue(event.target.checked);
-    fetchApiData(1, "", {}, event.target.checked);
     ClearForm();
+    dispatch(fetchApiData(1, "", {}, event.target.checked));
   };
+;
+
   const handleCloseSelect = (input) => {
-    input.onChange(""); // Clear the selected value
+    input.onChange("");
   };
+
 
   const getComonent = (label, key, values) => {
     return (
@@ -372,7 +378,7 @@ function Header() {
                 <SearchIconWrapper>
                   <SearchIcon />
                 </SearchIconWrapper>
-                {currentPath.includes("details") ? (
+                {!onDetails ? (
                   // <Autocomplete
                   //   style={{ width: "100%" }}
                   //   id="search-input"
@@ -409,6 +415,7 @@ function Header() {
                   <StyledInputBase
                     placeholder="Search…"
                     inputProps={{ "aria-label": "search" }}
+                    value={searchValue}
                     onChange={(e) => {
                       if (
                         searchValue &&
@@ -432,73 +439,79 @@ function Header() {
           </StyledToolbar>
         </AppBar>
       </Box>
-
-      <div className="filters" style={{ marginRight: "10px" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            columnGap: "5px",
-          }}
-        >
-          <Typography
-            style={{
-              display: "inline",
-              backdropFilter: "blur(2px)",
-              color: "white",
-              textShadow: "0px 5px 5px black",
-              fontFamily: "cursive",
+      {onDetails ? (
+        <>
+          <div className="filters" style={{ marginRight: "10px" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                columnGap: "5px",
+              }}
+            >
+              <Typography
+                style={{
+                  display: "inline",
+                  backdropFilter: "blur(2px)",
+                  color: "white",
+                  textShadow: "0px 5px 5px black",
+                }}
+              >
+                Top Anime{" "}
+              </Typography>{" "}
+              <IOSSwitch
+                defaultChecked
+                label="Top Anime"
+                checked={currentTopAnime}
+                onChange={handleChange}
+                inputProps={{ "aria-label": "controlled" }}
+              />{" "}
+            </div>
+            <StyledButton
+              className="floating-icon1"
+              onClick={toggleDrawer(true)}
+            >
+              <Badge
+                badgeContent={Object.values(filterValue)?.length}
+                color="primary"
+              >
+                <FilterAltOutlinedIcon color="action" />
+              </Badge>
+            </StyledButton>
+          </div>
+          <Drawer
+            anchor="right"
+            open={drawerOpen}
+            onClose={toggleDrawer(false)}
+            ModalProps={{
+              BackdropProps: {
+                onClick: handleBackdropClick,
+              },
             }}
           >
-            Top Anime{" "}
-          </Typography>{" "}
-          <IOSSwitch
-            defaultChecked
-            label="Top Anime"
-            checked={currentTopAnime}
-            onChange={handleChange}
-            inputProps={{ "aria-label": "controlled" }}
-          />{" "}
-        </div>
-        <StyledButton className="floating-icon1" onClick={toggleDrawer(true)}>
-          <Badge
-            badgeContent={Object.values(filterValue)?.length}
-            color="primary"
-          >
-            <FilterAltOutlinedIcon color="action" />
-          </Badge>
-        </StyledButton>
-      </div>
-      <Drawer
-        anchor="right"
-        open={drawerOpen}
-        onClose={toggleDrawer(false)}
-        ModalProps={{
-          BackdropProps: {
-            onClick: handleBackdropClick,
-          },
-        }}
-      >
-        <Box sx={{ width: 250, padding: "16px" }}>
-          <Form
-            initialValues={filterValue}
-            style={{}}
-            onSubmit={onSubmit}
-            render={({ handleSubmit }) => (
-              <form onSubmit={handleSubmit}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginBottom: "10px",
-                  }}
-                >
-                  <Typography
-                    style={{ fontWeight: "600 !important", fontSize: "20px" }}
-                  >
-                    Filter
-                  </Typography>
-                  <IconButton
+            <Box sx={{ width: 250, padding: "16px" }}>
+              <Form
+                initialValues={filterValue}
+                style={{}}
+                onSubmit={onSubmit}
+                render={({ handleSubmit }) => (
+                  <form onSubmit={handleSubmit}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <Typography
+                        style={{
+                          fontWeight: "600 !important",
+                          fontSize: "20px",
+                        }}
+                      >
+                        Filter
+                      </Typography>
+                      {/* <IconButton
                     size="small"
                     edge="end"
                     onClick={() => handleCloseDrawer()}
@@ -510,62 +523,71 @@ function Header() {
                         color: "orange",
                       }}
                     />
-                  </IconButton>
-                </div>
-                {getComonent("Type", "type", [
-                  { key: "tv", value: "Rv", index: 0 },
-                  { key: "movie", value: "Movie", index: 1 },
-                  { key: "ova", value: "Ova", index: 2 },
-                  { key: "special", value: "Special", index: 3 },
-                  { key: "ona", value: "Ona", index: 4 },
-                  { key: "music", value: "Music", index: 5 },
-                  { key: "cm", value: "Cm", index: 6 },
-                  { key: "pv", value: "Pv", index: 7 },
-                  { key: "tv_special", value: "Tv Special", index: 8 },
-                ])}
-                {getComonent("Status", "status", [
-                  { key: "airing", value: "Airing", index: 0 },
-                  { key: "upcoming", value: "Upcoming", index: 1 },
-                  { key: "complete", value: "Complete", index: 2 },
-                ])}
-                {getComonent("Rating", "rating", [
-                  { key: "g", value: "G - All Ages", index: 0 },
-                  { key: "pg", value: "PG - Children", index: 1 },
-                  { key: "pg13", value: "PG-13 - Teens 13 or older", index: 2 },
-                  {
-                    key: "r17",
-                    value: "R - 17+ (violence & profanity)",
-                    index: 3,
-                  },
-                ])}
+                  </IconButton> */}
+                    </div>
+                    {getComonent("Type", "type", [
+                      { key: "tv", value: "Rv", index: 0 },
+                      { key: "movie", value: "Movie", index: 1 },
+                      { key: "ova", value: "Ova", index: 2 },
+                      { key: "special", value: "Special", index: 3 },
+                      { key: "ona", value: "Ona", index: 4 },
+                      { key: "music", value: "Music", index: 5 },
+                      { key: "cm", value: "Cm", index: 6 },
+                      { key: "pv", value: "Pv", index: 7 },
+                      { key: "tv_special", value: "Tv Special", index: 8 },
+                    ])}
+                    {getComonent("Status", "status", [
+                      { key: "airing", value: "Airing", index: 0 },
+                      { key: "upcoming", value: "Upcoming", index: 1 },
+                      { key: "complete", value: "Complete", index: 2 },
+                    ])}
+                    {getComonent("Rating", "rating", [
+                      { key: "g", value: "G - All Ages", index: 0 },
+                      { key: "pg", value: "PG - Children", index: 1 },
+                      {
+                        key: "pg13",
+                        value: "PG-13 - Teens 13 or older",
+                        index: 2,
+                      },
+                      {
+                        key: "r17",
+                        value: "R - 17+ (violence & profanity)",
+                        index: 3,
+                      },
+                    ])}
 
-                {getComonent("Order By", "order_by", [
-                  { key: "start_date", value: "Start Date", index: 0 },
-                  { key: "end_date", value: "End Date", index: 1 },
-                  { key: "episodes", value: "Episodes", index: 2 },
-                  { key: "score", value: "Score", index: 3 },
-                  { key: "scored_by", value: "Scored By", index: 4 },
-                  { key: "rank", value: "Rank", index: 5 },
-                  { key: "popularity", value: "Popularity", index: 6 },
-                  { key: "members", value: "Members", index: 7 },
-                  { key: "favorites", value: "Favorites", index: 8 },
-                ])}
+                    {getComonent("Order By", "order_by", [
+                      { key: "start_date", value: "Start Date", index: 0 },
+                      { key: "end_date", value: "End Date", index: 1 },
+                      { key: "episodes", value: "Episodes", index: 2 },
+                      { key: "score", value: "Score", index: 3 },
+                      { key: "scored_by", value: "Scored By", index: 4 },
+                      { key: "rank", value: "Rank", index: 5 },
+                      { key: "popularity", value: "Popularity", index: 6 },
+                      { key: "members", value: "Members", index: 7 },
+                      { key: "favorites", value: "Favorites", index: 8 },
+                    ])}
 
-                <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <Button variant="outlined" onClick={ClearForm}>
-                    clear
-                  </Button>
-                  <Button type="submit" variant="contained">
-                    Submit
-                  </Button>
-                </div>
-              </form>
-            )}
-          />
-        </Box>
-      </Drawer>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Button variant="outlined" onClick={ClearForm}>
+                        clear
+                      </Button>
+                      <Button type="submit" variant="contained">
+                        Submit
+                      </Button>
+                    </div>
+                  </form>
+                )}
+              />
+            </Box>
+          </Drawer>{" "}
+        </>
+      ) : null}
     </>
   );
 }

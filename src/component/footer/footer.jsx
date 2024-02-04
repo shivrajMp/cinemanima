@@ -20,7 +20,7 @@ function Footer(prop) {
             target="_blank"
           >
             <LinkedIn sx={{ color: "#1976d2" }} />{" "}
-            <span className="clickme_">Hire me </span>
+            <span className="clickme_">Feedback / Hire me </span>
           </a>
         </div>
         <div class="product-link">

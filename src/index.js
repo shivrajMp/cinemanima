@@ -18,11 +18,11 @@ root.render(
       <Provider store={store}>
         <MyContextProvider>
         <div className="main-container">
-         <Header />
+         <Header className="head_content" />
           <div className="content">
             <App />
           </div>
-          <Footer />
+          <Footer className="foot_content"/>
         </div>
         </MyContextProvider>
       </Provider>
