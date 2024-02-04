@@ -10,7 +10,10 @@ import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import { useForm } from "react-hook-form";
 import { Form, Field } from "react-final-form";
+import { createBrowserHistory } from "history";
+// import { useLocation, useNavigate } from "react-router-dom";
 import {
+  Autocomplete,
   Badge,
   Button,
   Drawer,
@@ -19,6 +22,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
   SwipeableDrawer,
   Switch,
   TextField,
@@ -64,7 +68,7 @@ const StyledField = styled(Field)`
 `;
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
-  width: "300px !important", // Adjust this width as needed
+  width: "100% !important", // Adjust this width as needed
   "& .MuiInputBase-input": {
     color: "white",
     padding: theme.spacing(1, 1, 1, 0),
@@ -72,11 +76,18 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     paddingLeft: `calc(1em + ${theme.spacing(4)}) !important`,
     transition: theme.transitions.create("width"),
     [theme.breakpoints.up("sm")]: {
-      width: "12ch !important",
-      height: "1ch !important",
-      "&:focus": {
-        width: "20ch !important",
-      },
+      width: "100% !important",
+      height: "auto !important",
+      padding: theme.spacing(0, 0, 0, 0),
+      // "&:focus": {
+      //   width: "20ch !important",
+      // },
+    },
+  },
+  "& .MuiOutlinedInput-root": {
+    padding: "0 !important",
+    [theme.breakpoints.up("sm")]: {
+      padding: "0 !important",
     },
   },
 }));
@@ -206,7 +217,7 @@ const IOSSwitch = styled((props) => (
 }));
 
 function Header() {
-  const totalAnime = useSelector((state) => state?.totalAnime?.data);
+  const animeList = useSelector((state) => state?.data?.anime?.data);
   const isLoading = useSelector((state) => state?.totalAnime?.loading);
   const { currentTopAnime, updateValue, onDetails, updateOnDetails } =
     React.useContext(MyContext);
@@ -215,33 +226,24 @@ function Header() {
     window.location.href = "/cinemanima";
   };
 
-  React.useEffect(() => {
-    // dispatch(fetchTotalAnimeApiData());
-  });
-
   const handleOptionClick = () => {
     // console.log(searchValue);
     // console.log(searchValue);
     clickSound.play();
     updateValue(false);
+    console.log(searchValue, "searchValue");
     dispatch(clearDetailsActionCreator());
     dispatch(fetchApiData(1, searchValue, {}, false));
   };
 
   const [searchValue, setSearchValue] = React.useState("");
   const [filterValue, setFilterValue] = React.useState({});
+  const [snackBarOpen, setSnackBarOpen] = React.useState(false);
   // const [topAnimeCheck, settopAnimeCheck] = React.useState(true);
   const currentPath = window.location.href;
 
-  React.useEffect(() => {
-    console.log(currentPath);
-    // console.log(currentPath.includes("details"));
-  }, [currentPath]);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  React.useEffect(() => {
-    console.log(totalAnime);
-    // console.log(totalAnime,"totalAnime`");
-  }, [totalAnime]);
+
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === "keydown" &&
@@ -284,13 +286,11 @@ function Header() {
     ClearForm();
     dispatch(fetchApiData(1, "", {}, event.target.checked));
   };
-;
-
   const handleCloseSelect = (input) => {
     input.onChange("");
   };
 
-
+  const history = createBrowserHistory();
   const getComonent = (label, key, values) => {
     return (
       <StyledField name={key} style={{ margin: "10px !important" }}>
@@ -345,8 +345,19 @@ function Header() {
       </StyledField>
     );
   };
+ const closeSnackbar =()=>{
+  setSnackBarOpen(false)
+  setSearchValue("");
+ }
   return (
     <>
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={3000}
+        onClose={closeSnackbar}
+        message="Not implemented !! (cinemanima)"
+        anchorOrigin={{ vertical:'top', horizontal:'center' }}
+      />
       <Box
         sx={{ flexGrow: 1 }}
         style={{
@@ -373,45 +384,69 @@ function Header() {
               />
               <CinemanimaHeading id="text">Cinemanima</CinemanimaHeading>
             </div>
-            <div style={{ display: "flex", columnGap: "10px" }}>
+            <div
+              style={{
+                display: "flex",
+                columnGap: "10px",
+                justifyContent: "end",
+                width: "70%",
+              }}
+            >
               <Search>
                 <SearchIconWrapper>
                   <SearchIcon />
                 </SearchIconWrapper>
                 {!onDetails ? (
-                  // <Autocomplete
-                  //   style={{ width: "100%" }}
-                  //   id="search-input"
-                  //   freeSolo
-                  //   options={totalAnime}
-                  //   getOptionLabel={(option) => option?.data?.title_english}
-
-                  //   renderOption={(props, option) => (
-                  //     <li {...props}>
-                  //       <img
-                  //         src={option?.img}
-                  //         alt={option?.year}
-                  //         style={{ width: 24  }}
-                  //       />
-                  //       {option?.year}
-                  //     </li>
-                  //   )}
-                  //   renderInput={(params) => (
-                  //     <StyledTextField
-                  //       {...params}
-                  //       placeholder="Search…"
-                  //       inputProps={{
-                  //         ...params.inputProps,
-                  //         "aria-label": "search",
-                  //       }}
-                  //     />
-                  //   )}
-                  //   onChange={(event, value) => {console.log(event.target.value); console.log(value)}}
-                  //   // onInputChange={(event, newInputValue) => handleInputChange(newInputValue)}
-
-                  // />
-                  <></>
+                  <Autocomplete
+                    // style={{ width: "100%" }}
+                    open
+                    id="search-input"
+                    freeSolo
+                    options={
+                      animeList?.length && animeList[0]?.url ? animeList : []
+                    }
+                    getOptionLabel={(option) => option?.title_english || ""}
+                    renderOption={(props, option) => (
+                      <li {...props}>
+                        <img
+                          src={option?.images?.jpg?.small_image_url}
+                          alt={option?.year}
+                          style={{ width: 24 }}
+                        />
+                        {option?.year} &nbsp;{option?.title_english}
+                      </li>
+                    )}
+                    renderInput={(params) => (
+                      <StyledTextField
+                        {...params}
+                        placeholder="Search…"
+                        inputProps={{
+                          ...params.inputProps,
+                          "aria-label": "search",
+                        }}
+                      />
+                    )}
+                    onChange={(event, value) => {
+                      console.log(value);
+                      // history.push(`#/anime/details/${value?.title_english || value?.title}/${value?.mal_id}`)
+                      if (value?.mal_id) {
+                        setSnackBarOpen(true)
+                      }
+                      // window.location.assign(`cinemanimas/anime/details/${value?.title_english || value?.title}/${value?.mal_id}`)
+                      // window.location.reload();
+                    }}
+                    onInputChange={(event, newInputValue) => {
+                      if (
+                        searchValue &&
+                        (!event?.target?.value || event?.target?.value == "")
+                      ) {
+                        dispatch(fetchApiData(1, "", {}, currentTopAnime));
+                      }
+                      setSearchValue(event.target.value);
+                    }}
+                  />
                 ) : (
+                  // <></>
                   <StyledInputBase
                     placeholder="Search…"
                     inputProps={{ "aria-label": "search" }}

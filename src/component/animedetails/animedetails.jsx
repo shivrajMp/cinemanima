@@ -2,12 +2,16 @@ import { useContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { fetchApiAnimeData } from "../../action/animeAction";
+import {
+  clearDetailsActionCreator,
+  fetchApiAnimeData,
+} from "../../action/animeAction";
 import "./animedetails.css";
 import ContentLoader, { List } from "react-content-loader";
 import TrailerEmbed from "../embedTrailer/trailerembed";
 import { MyContext } from "../../context/context";
-import { Chip } from "@mui/material";
+import { Chip, Skeleton } from "@mui/material";
+import { YouTube } from "@mui/icons-material";
 
 const CardImage = styled.img`
   height: 25rem !important;
@@ -46,7 +50,7 @@ const DetailsDiv = styled.div`
     font-weight: bolder;
   }
   @media (max-width: 1200px) {
-    flex: 0 0 85%; /* Flex-basis set to 70% */
+    flex: 0 0 85%;
     max-width: 85%;
   }
 `;
@@ -69,6 +73,7 @@ function AnimeDetails() {
   }, [selectedanime]);
 
   useEffect(() => {
+    dispatch(clearDetailsActionCreator());
     dispatch(fetchApiAnimeData(animeId));
   }, [animeId]);
   const CardContentLoader = () => (
@@ -112,85 +117,98 @@ function AnimeDetails() {
                   <TrailerEmbed
                     embedUrl={selectedanime?.trailer?.embed_url}
                   ></TrailerEmbed>
-                ) : null}
+                ) : (
+                  <>
+                    <Skeleton variant="rectangular" width="100%" height={150} />
+                  </>
+                )}
               </>
             )}
           </div>
-          <DetailsDiv>
-            <p>
-              <b>
-                {selectedanime?.type}({selectedanime?.year})
-              </b>{" "}
-              {selectedanime?.rating}
-            </p>
+          {selectedanime ? (
+            <DetailsDiv>
+              <p>
+                <b>
+                  {selectedanime?.type}({selectedanime?.year})
+                </b>{" "}
+                {selectedanime?.rating}
+              </p>
 
-            <h1 id="title">{selectedanime?.title_english}</h1>
-            <Chip
-              color="success"
-              size="small"
-              variant="filled"
-              label={selectedanime?.status}
-              style={{ margin: "10px 0" }}
-            />
-            <div style={{ display: "flex", columnGap: "10px" }}>
-              {selectedanime?.genres?.map((gener) => {
-                return (
-                  <Chip
-                    key={gener?.mal_id}
-                    color="warning"
-                    size="small"
-                    variant="filled"
-                    label={gener?.name}
-                    style={{
-                      margin: "10px 0",
-                      borderRadius: "6px",
-                      backgroundColor: "#ed6c02e3",
-                    }}
-                  />
-                );
-              })}
+              <h1 id="title">{selectedanime?.title_english}</h1>
+              <Chip
+                color="success"
+                size="small"
+                variant="filled"
+                label={selectedanime?.status}
+                style={{ margin: "10px 0" }}
+              />
+              <div style={{ display: "flex", columnGap: "10px" }}>
+                {selectedanime?.genres?.map((gener) => {
+                  return (
+                    <Chip
+                      key={gener?.mal_id}
+                      color="warning"
+                      size="small"
+                      variant="filled"
+                      label={gener?.name}
+                      style={{
+                        margin: "10px 0",
+                        borderRadius: "6px",
+                        backgroundColor: "#ed6c02e3",
+                      }}
+                    />
+                  );
+                })}
+              </div>
+              {selectedanime?.themes?.length ? (
+                <p>
+                  <b>Theme</b>
+                </p>
+              ) : null}
+              <div style={{ display: "flex", columnGap: "10px" }}>
+                {selectedanime?.themes?.map((gener) => {
+                  return (
+                    <Chip
+                      key={gener?.mal_id}
+                      size="small"
+                      variant="filled"
+                      label={gener?.name}
+                      style={{
+                        margin: "10px 0",
+                        borderRadius: "6px",
+                        backgroundColor: "#4f378b",
+                        color: "white",
+                      }}
+                    />
+                  );
+                })}
+              </div>
+              {selectedanime?.synopsis ? (
+                <p>
+                  <b>Synopsis</b>
+                </p>
+              ) : null}
+              <p className="para_">{selectedanime?.synopsis}</p>
+            </DetailsDiv>
+          ) : (
+            <div style={{ display: "flex", width: "60%" ,flexDirection:'column'}}>
+              <Skeleton variant="text" width="70%" />
+              <Skeleton variant="text" width="20%" height={100} />
+              <Skeleton variant="text" width="80%" />
+              <Skeleton variant="text" width="60%" />
+              <Skeleton variant="text" width="90%" />
+              <Skeleton variant="text" width="100%" height={100} />
+              <Skeleton variant="text" width="20%" />
+              <Skeleton variant="text" width="100%" />
+              <Skeleton variant="text" width="100%" />
+              <Skeleton variant="text" width="100%" />
             </div>
-            {selectedanime?.themes?.length ? (
-              <p>
-                <b>Theme</b>
-              </p>
-            ) : null}
-            <div style={{ display: "flex", columnGap: "10px" }}>
-              {selectedanime?.themes?.map((gener) => {
-                return (
-                  <Chip
-                    key={gener?.mal_id}
-                    size="small"
-                    variant="filled"
-                    label={gener?.name}
-                    style={{
-                      margin: "10px 0",
-                      borderRadius: "6px",
-                      backgroundColor: "#4f378b",
-                      color: "white",
-                    }}
-                  />
-                );
-              })}
-            </div>
-            {selectedanime?.synopsis ? (
-              <p>
-                <b>Synopsis</b>
-              </p>
-            ) : null}
-            <p className="para_">{selectedanime?.synopsis}</p>
-          </DetailsDiv>
-          {/* <div class="image-container"></div>
-      <CardImage
-        src={selectedanime?.images?.webp?.large_image_url}
-        loading="lazy"
-        alt="Image"
-      /> */}
+          )}
+          <div></div>
         </StyledDetailContainer>
       </div>
-      {/* <ChildDetails> */}
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <StyledDetailContainer>
+        <StyledDetailContainer style={{flexDirection:'column'}}>
           <div>
             {selectedanime?.background ? (
               <p>
@@ -199,9 +217,16 @@ function AnimeDetails() {
             ) : null}
             <p className="para_">{selectedanime?.background}</p>
           </div>
+          <div>
+            {selectedanime?.rank ? (
+              <p>
+                <b>Rank</b>
+              </p>
+            ) : null}
+            <p className="para_">#{selectedanime?.rank}</p>
+          </div>
         </StyledDetailContainer>
       </div>
-      {/* </ChildDetails> */}
     </div>
   );
 }

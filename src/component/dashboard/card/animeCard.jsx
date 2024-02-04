@@ -279,6 +279,8 @@ function AnimeCard({ anime, isLoading }) {
                 )}
               </CardInfo>
               <StyledInfo>
+                {
+                  anime?.mal_id?
                 <Link
                   to={`/anime/details/${anime?.title_english || anime?.title}/${
                     anime?.mal_id
@@ -288,6 +290,8 @@ function AnimeCard({ anime, isLoading }) {
 
                   {/* <InfoIcon /> */}
                 </Link>
+                :<>null</>
+}
               </StyledInfo>
             </AdditionalDetails>
           </CardContentDiv>

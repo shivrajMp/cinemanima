@@ -23,13 +23,14 @@ code {
   min-height: 100%;
 }
 .content {
+  flex-grow: 1;
   min-height: 80vh;
 }
 .head_content {
-
+  flex-grow: 1;
   min-height: 10vh;
 }
 .foot_contenttent {
-
+  flex-grow: 1;
   min-height: 10vh;
 }
