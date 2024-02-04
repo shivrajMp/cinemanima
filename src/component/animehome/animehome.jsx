@@ -1,63 +1,71 @@
-import React, { Suspense, useEffect, useState } from "react";
-import { Navigate, Route, Router, Routes } from "react-router-dom";
-import ErrorPage from "../error-page/errorpage";
-const MyLazyLoadedAnimeDetails = React.lazy(() =>
-  import("../animedetails/animedetails")
-);
-const MyLazyLoadedDashboard = React.lazy(() =>
-  import("../dashboard/dashboard")
-);
-function AnimeHome() {
-  const [isAtBottom, setIsAtBottom] = useState(false);
+// import * as React from "react";
+// import { styled, alpha } from "@mui/material/styles";
+// import AppBar from "@mui/material/AppBar";
+// import Box from "@mui/material/Box";
+// import Toolbar from "@mui/material/Toolbar";
+// import Autocomplete from "@mui/material/Autocomplete";
+// import TextField from "@mui/material/TextField";
+// import SearchIcon from "@mui/icons-material/Search";
+// import { useHistory } from "react-router-dom";
 
-  const handleClick = () => {
-    if (isAtBottom) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    }
-    setIsAtBottom(!isAtBottom);
-  };
-  useEffect(() => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight;
+// const Search = styled("div")(({ theme }) => ({
+//   position: "relative",
+//   borderRadius: theme.shape.borderRadius,
+//   backgroundColor: alpha(theme.palette.common.white, 0.15),
+//   "&:hover": {
+//     backgroundColor: alpha(theme.palette.common.white, 0.25),
+//   },
+//   marginLeft: 0,
+//   width: "100%",
+//   [theme.breakpoints.up("sm")]: {
+//     marginLeft: theme.spacing(1),
+//     width: "auto",
+//   },
+// }));
 
-    const isBottom = scrollTop + clientHeight >= scrollHeight;
-    // if (isBottom)
-    // setIsAtBottom(isBottom)
-    //  else if(scrollTop <= 0)
-    //  setIsAtBottom(scrollTop <= 0)
-  }, []);
-  return (
-    <>
-      <Router>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            <Route path="/anime" element={<MyLazyLoadedDashboard />} />
-            <Route
-              path="/anime/:animeName/:animeId"
-              element={<MyLazyLoadedAnimeDetails />}
-            />
-            {/* Redirect any unmatched paths to the home page */}
-            <Route
-              path="*"
-              element={
-                <Navigate
-                  to="/anime"
-                  replace // Use replace to avoid adding a new entry to the history stack
-                />
-              }
-            />
-            <Route path="/anime/error-page" element={<ErrorPage />} />
-          </Routes>
-        </Suspense>
-      </Router>
-      <button className="floating-icon" onClick={handleClick}>
-        {isAtBottom ? "▲" : "▼"} {/* Change icon based on state */}
-      </button>
-    </>
-  );
-}
+// const SearchIconWrapper = styled("div")(({ theme }) => ({
+//   padding: theme.spacing(0, 2),
+//   height: "100%",
+//   position: "absolute",
+//   pointerEvents: "none",
+//   display: "flex",
+//   alignItems: "center",
+//   justifyContent: "center",
+// }));
 
-export default AnimeHome;
+// const StyledInputBase = styled(TextField)(({ theme }) => ({
+//   color: "inherit",
+//   width: "100%",
+// }));
+
+// function AnimeHome() {
+//   const handleOptionClick = (value) => {
+//     if (value) {
+//     }
+//   };
+
+//   const options = ["Option 1", "Option 2", "Option 3"];
+
+//   return (
+//     <Search>
+//       <SearchIconWrapper>
+//         <SearchIcon />
+//       </SearchIconWrapper>
+//       <Autocomplete
+//         id="search-input"
+//         freeSolo
+//         options={options}
+//         renderInput={(params) => (
+//           <StyledInputBase
+//             {...params}
+//             placeholder="Search…"
+//             inputProps={{ ...params.inputProps, "aria-label": "search" }}
+//           />
+//         )}
+//         onChange={(event, value) => handleOptionClick(value)}
+//       />
+//     </Search>
+//   );
+// }
+
+// export default AnimeHome;

@@ -15,6 +15,7 @@ import {
 import './styles/tailwind.css';
 import AnimeDetails from "./component/animedetails/animedetails";
 import ErrorPage from "./component/error-page/errorpage";
+import {clickScroll} from  './utils/sound';
 const MyLazyLoadedAnimeDetails = React.lazy(() => import('./component/animedetails/animedetails'));
 const MyLazyLoadedDashboard = React.lazy(() => import('./component/dashboard/dashboard'));
 function App() {
@@ -22,6 +23,7 @@ function App() {
   const [isAtBottom, setIsAtBottom] = useState(false);
 
   const handleClick = () => {
+    clickScroll.play()
     if (isAtBottom) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
@@ -48,7 +50,7 @@ function App() {
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/anime" element={<MyLazyLoadedDashboard />} />
-          <Route path="/anime/:animeName/:animeId" element={<MyLazyLoadedAnimeDetails />} />
+          <Route path="/anime/details/:animeName/:animeId" element={<MyLazyLoadedAnimeDetails />} />
           {/* Redirect any unmatched paths to the home page */}
           <Route
             path="*"

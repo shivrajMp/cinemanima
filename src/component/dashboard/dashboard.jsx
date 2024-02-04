@@ -1,6 +1,6 @@
 import AnimeCard from "./card/animeCard";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { clearDetailsActionCreator, fetchApiData } from "../../action/animeAction";
 import styled from "styled-components";
 import {
@@ -16,7 +16,9 @@ import "./dashboard.css";
 import Footer from "../footer/footer";
 import Header from "../header/header";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import {clickSound} from '../../utils/sound';
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import { MyContext } from '../../context/context';
 const StyledMoviesGrid = styled(Grid)`
   position: relative;
 `;
@@ -105,13 +107,15 @@ function Dashboard() {
   const [inputError, setInputError] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
+  
+  const {currentTopAnime, updateValue } = useContext(MyContext);
   const handleChange = (event, value) => {
     // Handle page change
     localStorage.setItem("currentPage", value);
     setCurrentPage(value);
     setGoToPage(value);
     dispatch(clearDetailsActionCreator());
-    dispatch(fetchApiData(value));
+    dispatch(fetchApiData(value,"",{},currentTopAnime));
     navigate(`/anime?page=${value}`, { replace: true });
   };
   const [goToPage, setGoToPage] = useState(1);
@@ -124,6 +128,7 @@ function Dashboard() {
     navigate(`/anime/error-page`);
   }, [error]);
   const handleGoToClick = () => {
+    clickSound.play()
     if (
       goToPage &&
       goToPage > 0 &&
@@ -141,7 +146,7 @@ function Dashboard() {
     setCurrentPage(currentPage);
     setGoToPage(currentPage);
     dispatch(clearDetailsActionCreator());
-    dispatch(fetchApiData(currentPage));
+    dispatch(fetchApiData(currentPage,"",{},currentTopAnime));
     navigate(`/anime?page=${currentPage}`, { replace: true });
   }, [dispatch]);
 

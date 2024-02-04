@@ -6,7 +6,7 @@ import ContentLoader, { List } from "react-content-loader";
 import { YouTube } from "@mui/icons-material";
 import InfoIcon from "@mui/icons-material/Info";
 import { Link } from "react-router-dom";
-
+import {clickCardSound} from '../../../utils/sound';
 
 const bounceAnimation = keyframes`
   0%, 100% {
@@ -94,12 +94,16 @@ const CardText = styled.p(({ iconcolor, fontWeight }) => ({
 
 const StyledIconButton = styled(IconButton)`
   color: red !important;
-  display: inline-block;
-
+  display: inline;
+  
   padding: 0 !important;
-  color: red;
+
+  font-size: 2px !important;
   a {
     color: red !important;
+  }
+  a:hover{
+    color:#a30303!important;
   }
 `;
 
@@ -119,7 +123,7 @@ const StyledInfo = styled.div`
     color: gray;
     font-size: 1rem;
     position: relative;
-    top:7px;
+    top:3px;
   }
   a{
     display: flex;
@@ -201,11 +205,14 @@ function AnimeCard({ anime, isLoading }) {
       ) : (
         <>
           {images?.webp?.large_image_url ? (
+            <>
             <CardImage
               src={images?.webp?.large_image_url}
               loading="lazy"
               alt="Image"
             />
+            {/* <div idstyle={{zIndex:"1000",width:'100%',height:'20px',background:'#0000008f',bottom:'20px',position:'relative'}}></div> */}
+          </>
           ) : null}
           <CardContentDiv>
             <CardTitle>{anime?.title_english || anime?.title}</CardTitle>
@@ -273,13 +280,13 @@ function AnimeCard({ anime, isLoading }) {
               </CardInfo>
               <StyledInfo>
                 <Link
-                  to={`/anime/${anime?.title_english || anime?.title}/${
+                  to={`/anime/details/${anime?.title_english || anime?.title}/${
                     anime?.mal_id
                   }`}
                 >
                   <p id="moreinfo">More info</p>
 
-                  <InfoIcon />
+                  {/* <InfoIcon /> */}
                 </Link>
               </StyledInfo>
             </AdditionalDetails>

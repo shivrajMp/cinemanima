@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import store from "./store/movies.store";
+import {MyContextProvider} from "./context/context";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import Footer from "./component/footer/footer";
@@ -15,6 +16,7 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <Provider store={store}>
+        <MyContextProvider>
         <div className="main-container">
          <Header />
           <div className="content">
@@ -22,6 +24,7 @@ root.render(
           </div>
           <Footer />
         </div>
+        </MyContextProvider>
       </Provider>
     </ThemeProvider>
   </React.StrictMode>
