@@ -62,6 +62,7 @@ function App() {
             }
           />
           <Route path="/anime/error-page" element={<ErrorPage />} />
+          <Route path="/anime/error-page" element={<ErrorPage />} />
         </Routes>
         </Suspense>
       </Router>

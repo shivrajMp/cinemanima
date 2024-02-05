@@ -396,7 +396,7 @@ function Header() {
                 <SearchIconWrapper>
                   <SearchIcon />
                 </SearchIconWrapper>
-                {!onDetails ? (
+                {!onDetails && currentPath.includes("details") ? (
                   <Autocomplete
                     // style={{ width: "100%" }}
                     open
@@ -474,7 +474,7 @@ function Header() {
           </StyledToolbar>
         </AppBar>
       </Box>
-      {onDetails ? (
+      {onDetails && !currentPath.includes("details") ? (
         <>
           <div className="filters" style={{ marginRight: "10px" }}>
             <div

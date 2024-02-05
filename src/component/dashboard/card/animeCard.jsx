@@ -175,6 +175,9 @@ function AnimeCard({ anime, isLoading }) {
   // useEffect(() => {
   //   console.log(anime, "anime");
   // }, [anime]);
+  const cardClick_ = ()=>{
+    clickCardSound.play()
+  }
   return (
     // <CardContainer variant="elevation" elevation={6}>
     //   <CardActionArea>
@@ -196,7 +199,7 @@ function AnimeCard({ anime, isLoading }) {
     //   </CardActionArea>
     // </CardContainer>
 
-    <CardContainer>
+    <CardContainer onClick={cardClick_}>
       {isLoading ? (
         <>
           <CardContentLoader />
@@ -218,6 +221,7 @@ function AnimeCard({ anime, isLoading }) {
             <CardTitle>{anime?.title_english || anime?.title}</CardTitle>
             {/* <CardText>{anime.title_english}</CardText> */}
             <AdditionalDetails>
+              {}
               {/* Add more details to show on hover */}
               <CardInfo>
                 <CardText iconcolor="#000000" fontWeight={500}>
